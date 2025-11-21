@@ -31,6 +31,13 @@ public interface CategoryMapper {
     void deleteCategoryById(Long id);
 
     /**
+     * 根据ID查询分类信息
+     * @param id
+     */
+    @Select("select * from category where id = #{id}")
+    Category getById(Long id);
+
+    /**
      * 更新分类信息
      * @param category
      */
