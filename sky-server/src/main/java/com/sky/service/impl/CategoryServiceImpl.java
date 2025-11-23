@@ -17,6 +17,7 @@ import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,11 +68,9 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      */
     @Override
+    @Transactional
     public void updateCategoryStatus(Integer status, Long id) {
-        Category category = new Category();
-
-        category.setId(id);
-        category.setStatus(status);
+        Category category = Category.builder().id(id).status(status).build();
 
         categoryMapper.update(category);
     }
