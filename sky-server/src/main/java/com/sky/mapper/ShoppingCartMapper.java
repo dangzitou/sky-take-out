@@ -21,9 +21,9 @@ public interface ShoppingCartMapper {
 
     /**
      * 新增购物车商品
-     * @param shoppingCartItem
+     * @param shoppingCart
      */
     @Insert("INSERT INTO shopping_cart (name, user_id, dish_id, setmeal_id, dish_flavor, number, amount, image, create_time) " +
             "VALUES (#{name}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{image}, #{createTime})")
-    void insert(ShoppingCart shoppingCartItem);
+    void insert(ShoppingCart shoppingCart);
 }
