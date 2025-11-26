@@ -11,6 +11,11 @@ import java.util.List;
 
 @Mapper
 public interface ShoppingCartMapper {
+    /**
+     * 根据用户id和菜品id或套餐id查询购物车
+     * @param shoppingCart
+     * @return
+     */
     List<ShoppingCart> list(ShoppingCart shoppingCart);
 
     /**
@@ -28,6 +33,17 @@ public interface ShoppingCartMapper {
             "VALUES (#{name}, #{userId}, #{dishId}, #{setmealId}, #{dishFlavor}, #{number}, #{amount}, #{image}, #{createTime})")
     void insert(ShoppingCart shoppingCart);
 
+    /**
+     * 根据用户id清空购物车
+     * @param currentUserId
+     */
     @Delete("DELETE FROM shopping_cart WHERE user_id = #{currentUserId}")
     void cleanByUserId(Long currentUserId);
+
+    /**
+     * 根据id删除购物车商品
+     * @param id
+     */
+    @Delete("DELETE FROM shopping_cart WHERE id = #{id}")
+    void deleteById(Long id);
 }
