@@ -50,11 +50,11 @@ public interface CategoryMapper {
      * @return
      */
     Page<Category> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
     /**
      * 根据类型查询分类列表
      * @param type
      * @return
      */
-    @Select("select * from category where type = #{type} order by sort asc, update_time desc")
     List<Category> listCategory(Integer type);
 }

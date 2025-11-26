@@ -19,3 +19,6 @@ sky:
     access-key-secret: VJDVzTqXXezdOMk5j8ponFARHYN4fv
     bucket-name: java-dangzitou
 
+  wechat:
+    appid: wx37dffc4cfd30b334
+    secret: d55334b07f7362a8c8c919f550031e4b
