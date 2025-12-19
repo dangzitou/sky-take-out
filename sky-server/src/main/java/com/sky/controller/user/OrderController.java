@@ -72,4 +72,28 @@ public class OrderController {
         }
         return null;
     }
+
+    /**
+     * 用户取消订单
+     * @param id
+     * @return
+     */
+    @PutMapping("/cancel/{id}")
+    public Result cancelOrder(@PathVariable Long id){
+        log.info("用户取消订单,id={}", id);
+        orderService.cancleOrder(id);
+        return Result.success();
+    }
+
+    /**
+     * 用户再次下单
+     * @param id
+     * @return
+     */
+    @PostMapping("/repetition/{id}")
+    public Result repetition(@PathVariable Long id){
+        log.info("用户再次下单,id={}", id);
+        orderService.repetition(id);
+        return Result.success();
+    }
 }

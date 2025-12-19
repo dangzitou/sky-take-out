@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -176,6 +178,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageResult getHistoryOrders(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
         Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
         long total = page.getTotal();
         List<OrderVO> orderVOList = new ArrayList<>();
@@ -206,5 +209,75 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orders.getId());
         orderVO.setOrderDetailList(orderDetails);
         return orderVO;
+    }
+
+    /**
+     * 用户取消订单
+     *
+     * @param id
+     */
+    @Override
+    public void cancleOrder(Long id) {
+        Orders orders = orderMapper.getById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        // 只有待支付状态的订单才能取消
+        if (!orders.getStatus().equals(Orders.PENDING_PAYMENT)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_CANNOT_BE_CANCELLED);
+        }
+        orders.setStatus(Orders.CANCELLED);
+        orderMapper.update(orders);
+    }
+
+    /**
+     * 用户再次下单
+     *
+     * @param id
+     */
+    @Override
+    @Transactional
+    public void repetition(Long id) {
+        Orders orders = orderMapper.getById(id);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+        List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(id);
+        for (OrderDetail orderDetail : orderDetails) {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(orderDetail, shoppingCart);
+            shoppingCart.setUserId(BaseContext.getCurrentId());
+            shoppingCart.setCreateTime(LocalDateTime.now());
+            shoppingCartMapper.insert(shoppingCart);
+        }
+        orderDetailMapper.insertBatch(orderDetails);
+    }
+
+    /**
+     * 管理员端条件查询订单
+     *
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult getOrdersByCondition(OrdersPageQueryDTO ordersPageQueryDTO) {
+        PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+        long total = page.getTotal();
+        List<OrderVO> orderVOList = new ArrayList<>();
+        for (Orders orders : page.getResult()) {
+            OrderVO orderVO = new OrderVO();
+            BeanUtils.copyProperties(orders, orderVO);
+            List<OrderDetail> orderDetails = orderDetailMapper.getByOrderId(orders.getId());
+            String dishes = orderDetails == null ? "" :
+                    orderDetails.stream()
+                            .filter(Objects::nonNull)
+                            .map(OrderDetail::getName)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.joining(","));
+            orderVO.setOrderDishes(dishes);
+            orderVOList.add(orderVO);
+        }
+        return new PageResult(total, orderVOList);
     }
 }

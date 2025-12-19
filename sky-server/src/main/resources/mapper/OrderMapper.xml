@@ -48,8 +48,17 @@
     <select id="pageQuery" resultType="com.sky.entity.Orders">
         select * from orders
         <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
             <if test = "number != null and number != ''">
                 and number = #{number}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
             </if>
             <if test = "beginTime != null">
                 and order_time &gt;= #{beginTime}

@@ -37,4 +37,23 @@ public interface OrderService {
      * @return
      */
     OrderVO getOrderDetailById(Long id);
+
+    /**
+     * 用户取消订单
+     * @param id
+     */
+    void cancleOrder(Long id);
+
+    /**
+     * 用户再次下单
+     * @param id
+     */
+    void repetition(Long id);
+
+    /**
+     * 管理员端条件查询订单
+     * @param ordersPageQueryDTO
+     * @return
+     */
+    PageResult getOrdersByCondition(OrdersPageQueryDTO ordersPageQueryDTO);
 }
