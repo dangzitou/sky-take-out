@@ -13,6 +13,7 @@ import com.sky.exception.ShoppingCartBusinessException;
 import com.sky.exception.OrderBusinessException;
 import com.sky.result.PageResult;
 import com.sky.utils.WeChatPayUtil;
+import com.sky.utils.BaiduMapUtil;
 import com.sky.mapper.*;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
@@ -48,8 +49,11 @@ public class OrderServiceImpl implements OrderService {
     private UserMapper userMapper;
     @Autowired
     private WeChatPayUtil weChatPayUtil;
+    @Autowired
+    private BaiduMapUtil baiduMapUtil;
 
     private Orders orders;
+
     /**
      * 提交订单
      *
@@ -68,6 +72,12 @@ public class OrderServiceImpl implements OrderService {
                 + (addressBook.getCityName() == null ? "" : addressBook.getCityName())
                 + (addressBook.getDistrictName() == null ? "" : addressBook.getDistrictName())
                 + (addressBook.getDetail() == null ? "" : addressBook.getDetail());
+        Double distance = baiduMapUtil.calculateDistance(address);
+        if (distance == null) {
+            throw new OrderBusinessException(MessageConstant.CANNOT_PARSE_DISTANCE);
+        } else if (distance >= 5.0) {
+            throw new OrderBusinessException(MessageConstant.OUT_OF_DELIVERY_RANGE);
+        }
         Long userId = BaseContext.getCurrentId();
         ShoppingCart shoppingCart = ShoppingCart.builder()
                 .userId(userId)

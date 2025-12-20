@@ -19,6 +19,12 @@ sky:
     access-key-secret: VJDVzTqXXezdOMk5j8ponFARHYN4fv
     bucket-name: java-dangzitou
 
+  baidu:
+    ak: nw1jp605gYga90yEGnmexgjwkWfZBlF2
+
   wechat:
     appid: wx37dffc4cfd30b334
     secret: d55334b07f7362a8c8c919f550031e4b
+
+  shop:
+    address: 福建省厦门市翔安区翔安南路4221号厦门大学翔安校区
