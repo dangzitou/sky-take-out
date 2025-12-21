@@ -65,4 +65,12 @@ public interface OrderMapper {
      */
     @Select("select count(*) from orders where status = #{status}")
     Integer countOrdersByStatus(Integer status);
+
+    /**
+     * 查询超时未支付订单
+     * @param timeoutTime
+     * @return
+     */
+    @Select("select * from orders where status = #{status} and order_time <= #{timeoutTime}")
+    List<Orders> getTimeoutOrdersByStatus(Integer status, LocalDateTime timeoutTime);
 }
