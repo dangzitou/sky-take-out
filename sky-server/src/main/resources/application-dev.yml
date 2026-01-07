@@ -15,8 +15,8 @@ sky:
 
   alioss:
     endpoint: oss-cn-shenzhen.aliyuncs.com
-    access-key-id: LTAI5tEJugjUC7XXDANVuGW3
-    access-key-secret: VJDVzTqXXezdOMk5j8ponFARHYN4fv
+    access-key-id: your-access-key-id
+    access-key-secret: your-alioss-access-key-secret
     bucket-name: java-dangzitou
 
   baidu:
